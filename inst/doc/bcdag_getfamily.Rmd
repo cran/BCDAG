@@ -65,7 +65,7 @@ out <- learn_DAG(S = 5000, burn = 1000, data = X,
                  fast = FALSE, save.memory = FALSE, collapse = FALSE)
 ```
 
-## MCMC diagnsotics of convergence: function `get_diagnostics()`
+## MCMC diagnostics of convergence: function `get_diagnostics()`
 
 Before using the MCMC output for posterior inference, it is common practice to perform some convergence checks.
 Function `get_diagnostics()` provides graphical diagnostics of convergence for the MCMC output of `learn_DAG()`.
@@ -81,19 +81,21 @@ Output is organized in $q$ plots (one for each node $v = 1, \dots, q$), each sum
 
 
 ```{r fig.width = 7, fig.height= 6}
-get_diagnostics(out)
+get_diagnostics(out, ask = FALSE)
 ```
 
 
 ## Posterior inference: DAG structure learning
 
 We now show how to perform posterior inference of DAGs from the MCMC output.
-To summarize the output of `learn_DAG()`, a `summary()` method for objects of class `bcdag` is available.
-When `summary()` is applied to a `bcdag` object, a printed message appears. This summarizes the type of `bcdag` object (see details on `bcdag` object types provided in [the previous vignette](#)) and the input arguments of `learn_DAG()` that generated the output.
-In addition, the function returns some graphical outputs representing the Median Probability DAG Model estimate (MPM), the estimated posterior probabilities of edge inclusion and the posterior distribution of the graph size:
+To summarize the output of `learn_DAG()`, `print()`, `summary()` and `plot()`methods for objects of class `bcdag` are available.
+When `print()` is applied to a `bcdag` object, a printed message appears. This summarizes the type of `bcdag` object (see details on `bcdag` object types provided in [the previous vignette](#)) and the input arguments of `learn_DAG()` that generated the output.
+When `summary()` is used, also the posterior probabilities of edge inclusion are reported. Finally, `plot()` returns a graphical representation of the Median Probability DAG, an heatmap with the probabilities of edge inclusion and an histogram of the sizes of graph visited by the Markov chain.
 
 ```{r}
+print(out)
 summary(out)
+plot(out)
 ```
 
 Function `get_edgeprobs()` computes and returns the collection of posterior probabilities of edge inclusion, arranged as a $(q,q)$ matrix, with $(u,v)$-element referring to edge $u\rightarrow v$:
@@ -118,9 +120,9 @@ MAPdag
 
 ```{r fig.width = 7}
 par(mfrow = c(1,3))
-gRbase::plot(as(DAG, "graphNEL"), main = "True DAG")
-gRbase::plot(as(MPMdag, "graphNEL"), main = "MPM DAG")
-gRbase::plot(as(MAPdag, "graphNEL"), main = "MAP DAG")
+Rgraphviz::plot(as_graphNEL(DAG), main = "True DAG")
+Rgraphviz::plot(as_graphNEL(MPMdag), main = "MPM DAG")
+Rgraphviz::plot(as_graphNEL(MAPdag), main = "MAP DAG")
 ```
 
 In this example, the MPM and MAP estimates differ by a single an edge between nodes $4$ and $7$ which is reversed among the two graphs.
@@ -160,10 +162,8 @@ See also Castelletti \& Mascaro (2021) and Nandy et al. (2017) for more details.
 
 To better understand the difference between single and joint interventions, consider as an example the total causal effect on node $Y=1$ (i.e. variable $X_1$) of a joint intervention on nodes $4$ and $5$, $I=\{4,5\}$ (i.e. variables $X_4, X_5$) and the total causal effects of two separate interventions on nodes $4$ and $5$ under the causal model represented by the DAG generated before:
 
-<!-- DECIDERE SE DIRE "CAUSAL EFFECT ON NODE" E DIRETTAMENTE Y = 1 OPPURE (COME MEGLIO SAREBBE) "CAUSAL EFFECT ON VARIABLE" E A QUESTO PUNTO SI DEVE USARE $xX_1$ SALVO SPECIFICARE Y = 1 MA COME ARGOMENTO DELLA FUNZIONE; STESSA COSA NELL'HELP -->
-
 ```{r}
-gRbase::plot(as(DAG, "graphNEL"), main = "True DAG")
+Rgraphviz::plot(as_graphNEL(DAG), main = "True DAG")
 ```
 
 These are given by:
@@ -181,8 +181,8 @@ However, if we slightly modify the DAG by adding an edge from node $4$ to node $
 DAG2 <- DAG
 DAG2[4,5] <- 1
 par(mfrow = c(1,2))
-gRbase::plot(as(DAG, "graphNEL"), main = "True DAG")
-gRbase::plot(as(DAG2, "graphNEL"), main = "Modified DAG")
+Rgraphviz::plot(as_graphNEL(DAG), main = "True DAG")
+Rgraphviz::plot(as_graphNEL(DAG2), main = "Modified DAG")
 ```
 
 ```{r include = FALSE}
@@ -208,25 +208,21 @@ causaleffect(targets = 5, response = 1, L = L2, D = D)
 
 As it can be observed, this time a single intervention on $X_4$ produces a negative causal effect on $X_1$, while jointly intervening on $X_4$ and $X_5$ makes the total causal effect of $X_4$ on $X_1$ null. The effect of $X_4$ on $X_1$ was in fact mediated by $X_5$: intervening simultaneously also on $X_5$ erases the effect of $X_4$ on $X_5$ and, in turn, of $X_4$ on $X_1$. See also Castelletti \& Mascaro (2021) or Nandy et al. (2017) for a more detailed description. 
 
-<!-- This result suggests that, a joint intervention on node $4$ and $7$, forcing the two variables to any constant values $\tilde{x}_{4}$ and $\tilde{x}_{5}$ STAVO SCRIVENDO QUESTO MA POI MI SONO RESO CONTO DI UNA INCOERENZA; TU DISTINGUI I DUE CASI, OSSIA INTERVENTO SU 4 E INTERVENTO SU 5, MA QUI L'INTERVENTO NON E' SIMULTANEO (QUINDI SU ENTRAMBI)? -->
-<!-- ...does not cause any change in the expected value of node $1$, as could be expected from the fact that there is no directed path from $4$ to $1$. Intervening on node $5$, instead, will increase the expected value of node $1$.  -->
-
 
 The identification and estimation of causal effects requires the specification of a DAG. When the DAG is unknown, function `get_causaleffect()` can be used. It applies to objects of class `bcdag`; the latter corresponds to the output of `learn_DAG()` and consists of a sample of size $S$ from the posterior of DAGs and DAG parameters. In addition `get_causaleffect()` takes as input a numerical vector representing the labels of the intervened nodes (the intervention `target`) and a numerical value indicating the `response` variable.
-Output of the function is a sample of size $S$ from the posterior distribution of the causal effect coefficients associated with the intervention `targets`: 
+Output of the function is an object of class `bcdagCE`, containing a sample of size $S$ from the posterior distribution of the causal effect coefficients associated with the intervention `targets` and some useful summaries of the posterior distributions such as the mean and the quantiles: 
 
 ```{r}
 effects_out <- get_causaleffect(out, targets = c(4,5), response = 1)
-head(effects_out)
+head(effects_out$causaleffects)
 ```
 
-Additionally, if `BMA = TRUE`, `get_causaleffect()` returns a Bayesian Model Average (BMA) estimate of the causal effect coefficients:
+`print()`, `summary()` and `plot()` methods are available for objects of class `bcdagCE`. `print()` returns the input used and the prior hyperparameters. `summary()` returns the estimated mean, quantiles of the estimated causal effects, as well as the probabilities of it being greater, lower or equal to zero. `plots()` produces a boxplot and a histogram of the causal effect of each target node. 
 
 ```{r}
-## BMA estimate of causal effects
-round(get_causaleffect(out, targets = c(4,5), response = 1, BMA = TRUE), 3)
-## True causal effects
-round(causaleffect(targets = c(4,5), response = 1, L = L, D = D), 3)
+print(effects_out)
+summary(effects_out)
+plot(effects_out)
 ```
 
 Also notice that, if the `BCDAG` object input of `get_causaleffect()` is of type `collapsed` or `compressed and collapsed`, then `get_causaleffect()` requires drawing from the posterior distribution of parameters $(\boldsymbol L, \boldsymbol D)$ before estimating the required causal effects:
@@ -249,13 +245,13 @@ names(coll_out)
 
 
 ```{r include = FALSE}
-effects_collout <- get_causaleffect(coll_out, targets = c(4,5), response = 1, BMA = TRUE)
+effects_collout <- get_causaleffect(coll_out, targets = c(4,5), response = 1)
 ```
 ```{r eval = FALSE}
-effects_collout <- get_causaleffect(coll_out, targets = c(4,5), response = 1, BMA = TRUE)
+effects_collout <- get_causaleffect(coll_out, targets = c(4,5), response = 1)
 ```
 ```{r}
-round(effects_collout, 3)
+round(effects_collout$post_mean, 3)
 ```
 
 

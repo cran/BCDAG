@@ -1,4 +1,4 @@
-## ---- include = FALSE---------------------------------------------------------
+## ----include = FALSE----------------------------------------------------------
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
@@ -36,10 +36,12 @@ out <- learn_DAG(S = 5000, burn = 1000, data = X,
 #                   fast = FALSE, save.memory = FALSE, collapse = FALSE)
 
 ## ----fig.width = 7, fig.height= 6---------------------------------------------
-get_diagnostics(out)
+get_diagnostics(out, ask = FALSE)
 
 ## -----------------------------------------------------------------------------
+print(out)
 summary(out)
+plot(out)
 
 ## -----------------------------------------------------------------------------
 get_edgeprobs(out)
@@ -54,15 +56,15 @@ MAPdag
 
 ## ----fig.width = 7------------------------------------------------------------
 par(mfrow = c(1,3))
-gRbase::plot(as(DAG, "graphNEL"), main = "True DAG")
-gRbase::plot(as(MPMdag, "graphNEL"), main = "MPM DAG")
-gRbase::plot(as(MAPdag, "graphNEL"), main = "MAP DAG")
+Rgraphviz::plot(as_graphNEL(DAG), main = "True DAG")
+Rgraphviz::plot(as_graphNEL(MPMdag), main = "MPM DAG")
+Rgraphviz::plot(as_graphNEL(MAPdag), main = "MAP DAG")
 
 ## -----------------------------------------------------------------------------
 round(L, 3)
 
 ## -----------------------------------------------------------------------------
-gRbase::plot(as(DAG, "graphNEL"), main = "True DAG")
+Rgraphviz::plot(as_graphNEL(DAG), main = "True DAG")
 
 ## -----------------------------------------------------------------------------
 causaleffect(targets = c(4,5), response = 1, L = L, D = D)
@@ -73,8 +75,8 @@ causaleffect(targets = 5, response = 1, L = L, D = D)
 DAG2 <- DAG
 DAG2[4,5] <- 1
 par(mfrow = c(1,2))
-gRbase::plot(as(DAG, "graphNEL"), main = "True DAG")
-gRbase::plot(as(DAG2, "graphNEL"), main = "Modified DAG")
+Rgraphviz::plot(as_graphNEL(DAG), main = "True DAG")
+Rgraphviz::plot(as_graphNEL(DAG2), main = "Modified DAG")
 
 ## ----include = FALSE----------------------------------------------------------
 par(mfrow = c(1,1))
@@ -91,13 +93,12 @@ causaleffect(targets = 5, response = 1, L = L2, D = D)
 
 ## -----------------------------------------------------------------------------
 effects_out <- get_causaleffect(out, targets = c(4,5), response = 1)
-head(effects_out)
+head(effects_out$causaleffects)
 
 ## -----------------------------------------------------------------------------
-## BMA estimate of causal effects
-round(get_causaleffect(out, targets = c(4,5), response = 1, BMA = TRUE), 3)
-## True causal effects
-round(causaleffect(targets = c(4,5), response = 1, L = L, D = D), 3)
+print(effects_out)
+summary(effects_out)
+plot(effects_out)
 
 ## ----echo = FALSE, include=FALSE----------------------------------------------
 coll_out <- learn_DAG(S = 5000, burn = 1000, data = X,
@@ -113,15 +114,15 @@ coll_out <- learn_DAG(S = 5000, burn = 1000, data = X,
 names(coll_out)
 
 ## ----include = FALSE----------------------------------------------------------
-effects_collout <- get_causaleffect(coll_out, targets = c(4,5), response = 1, BMA = TRUE)
+effects_collout <- get_causaleffect(coll_out, targets = c(4,5), response = 1)
 
 ## ----eval = FALSE-------------------------------------------------------------
-#  effects_collout <- get_causaleffect(coll_out, targets = c(4,5), response = 1, BMA = TRUE)
+#  effects_collout <- get_causaleffect(coll_out, targets = c(4,5), response = 1)
 
 ## -----------------------------------------------------------------------------
-round(effects_collout, 3)
+round(effects_collout$post_mean, 3)
 
-## ---- include = FALSE---------------------------------------------------------
+## ----include = FALSE----------------------------------------------------------
 par(oldpar)
 options(oldoptions)
 

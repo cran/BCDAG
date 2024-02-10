@@ -20,6 +20,8 @@
 #' If the number of nodes is larger than 30 the traceplot of a random sample of 30 nodes is returned.
 #'
 #' @param learnDAG_output object of class \code{bcdag}
+#' @param ask Boolean argument passed to par() for visualization;
+#' @param nodes Numerical vector indicating those nodes for which we want to compute the posterior probability of edge inclusion;
 #'
 #' @return A collection of plots summarizing the behavior of the number of edges and the posterior probabilities of edge inclusion computed from the MCMC output.
 #' @export
@@ -46,9 +48,8 @@
 #' # Produce diagnostic plots
 #' get_diagnostics(out_mcmc)
 
-get_diagnostics <- function(learnDAG_output) {
-
-  if (validate_bcdag(learnDAG_output) == FALSE) {
+get_diagnostics <- function(learnDAG_output, ask = TRUE, nodes = integer(0)) {
+  if (!methods::is(learnDAG_output,"bcdag")) {
     stop("learnDAG_output must be an object of class bcdag")
   }
 
@@ -84,32 +85,61 @@ get_diagnostics <- function(learnDAG_output) {
     cumedgesum[,,i] <- (cumedgesum[,,i] + cumedgesum[,,i-1])
     cumedgeprob[,,i] <- cumedgesum[,,i]/i
   }
-
   tracematrices <- vector("list", q)
+  whc_iter <- lapply(1:q, function(i) as.matrix(1:S))
   whcs <- vector("list", q)
   for (j in 1:q) {
-    whc <- which(cumedgeprob[,j,S] != 0)
+    whc <- which(cumedgeprob[,j,S] >= 0.05)
     whcs[[j]] <- whc[order(cumedgeprob[whc, j, S], decreasing = TRUE)]
-    tracematrices[[j]] <- cumedgeprob[whcs[[j]],j,]
+    if (length(whcs[[j]]) != 1) {
+      tracematrices[[j]] <- t(as.matrix(cumedgeprob[whcs[[j]],j,]))
+    } else {
+      tracematrices[[j]] <- as.matrix(cumedgeprob[whcs[[j]],j,])
+    }
+
+    if (S > 10000) {
+      whc_iter[[j]] <- seq(1,S, length.out = 10000)
+      if (length(whc) > 1) {
+        tracematrices[[j]] <- tracematrices[[j]][whc_iter[[j]],]
+      } else {
+        tracematrices[[j]] <- as.matrix(tracematrices[[j]][whc_iter[[j]]])
+      }
+    }
   }
-
     ## Plotting
-
-  graphics::par(mfrow = c(1,2))
-  plot(1:S, Graphsizes, type = "l", xlab = "Iteration", ylab = "graph size", main = "", col = 1)
-  plot(1:S, cumsum(Graphsizes)/(1:S), type = "l", xlab = "Iteration", ylab = "average graph size", main = "", col = 2)
-  graphics::par(mfrow = c(2,3))
-  graphics::par(ask = TRUE)
-  if(q <= 30) {
-    for (j in 1:q) {
-      graphics::matplot(t(tracematrices[[j]]), type = "l", xlab = "Iteration", ylab = "prob. of inclusion", main = paste("Into node", j), ylim = c(0,1))
-      if (length(whcs[[j]]) != 0) graphics::legend("topleft", legend = utils::head(whcs[[j]], 6), col = 1:max(length(whcs[[j]]), 6), lty = 1, cex = 0.75)
+  graphics::par(mfrow = c(1,2), ask = ask)
+  base::plot(1:S, Graphsizes, type = "l", xlab = "Iteration", ylab = "graph size", main = "Graph size traceplot", col = 1)
+  base::plot(1:S, cumsum(Graphsizes)/(1:S), type = "l", xlab = "Iteration", ylab = "average graph size", main = "Graph size running mean", col = 2)
+  if (length(nodes) == 0) {
+    graphics::par(ask = ask)
+    if(q <= 30) {
+      graphics::par(mfrow = c(2,3))
+      for (j in 1:q) {
+        graphics::matplot(y = tracematrices[[j]], x = whc_iter[[j]], type = "l", xlab = "Iteration", ylab = "prob. of inclusion", main = paste("Into node", j), ylim = c(0,1))
+        if (length(whcs[[j]]) != 0) graphics::legend("topleft", legend = utils::head(whcs[[j]], 6), col = 1:max(length(whcs[[j]]), 6), lty = 1, cex = 0.75)
+      }
+    } else {
+      graphics::par(mfrow = c(2,3))
+      randomnodes <- sample(1:q, 30)
+      for (j in randomnodes) {
+        graphics::matplot(y = tracematrices[[j]], x = whc_iter[[j]], type = "l", xlab = "Iteration", ylab = "prob. of inclusion", main = paste("Into node", j), ylim = c(0,1))
+        if (length(whcs[[j]]) != 0) graphics::legend("topleft", legend = utils::head(whcs[[j]], 6), col = 1:max(length(whcs[[j]]), 6), lty = 1, cex = 0.75)
+      }
     }
   } else {
-    randomnodes <- sample(1:q, 30)
-    for (j in randomnodes) {
-      graphics::matplot(t(tracematrices[[j]]), type = "l", xlab = "Iteration", ylab = "prob. of inclusion", main = paste("Into node", j), ylim = c(0,1))
-      if (length(whcs[[j]]) != 0) graphics::legend("topleft", legend = utils::head(whcs[[j]], 6), col = 1:max(length(whcs[[j]]), 6), lty = 1, cex = 0.75)
+    if(length(nodes) <= 30) {
+      for (j in nodes) {
+        graphics::par(ask = ask, mfrow = c(1,1))
+        graphics::matplot(y = tracematrices[[j]], x = whc_iter[[j]], type = "l", xlab = "Iteration", ylab = "prob. of inclusion", main = paste("Into node", j), ylim = c(0,1))
+        if (length(whcs[[j]]) != 0) graphics::legend("topleft", legend = utils::head(whcs[[j]], 6), col = 1:max(length(whcs[[j]]), 6), lty = 1, cex = 0.75)
+      }
+    } else {
+      graphics::par(mfrow = c(2,3), ask = ask)
+      randomnodes <- sample(nodes, 30)
+      for (j in randomnodes) {
+        graphics::matplot(y = tracematrices[[j]], x = whc_iter[[j]], type = "l", xlab = "Iteration", ylab = "prob. of inclusion", main = paste("Into node", j), ylim = c(0,1))
+        if (length(whcs[[j]]) != 0) graphics::legend("topleft", legend = utils::head(whcs[[j]], 6), col = 1:max(length(whcs[[j]]), 6), lty = 1, cex = 0.75)
+      }
     }
   }
 }

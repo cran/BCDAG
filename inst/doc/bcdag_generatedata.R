@@ -1,4 +1,4 @@
-## ---- include = FALSE---------------------------------------------------------
+## ----include = FALSE----------------------------------------------------------
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
@@ -38,7 +38,7 @@ Sigma <- solve(Omega)
 n <- 1000
 X <- mvtnorm::rmvnorm(n = n, sigma = Sigma)
 
-## ---- include = FALSE---------------------------------------------------------
+## ----include = FALSE----------------------------------------------------------
 par(oldpar)
 options(oldoptions)
 

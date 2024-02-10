@@ -14,7 +14,9 @@
 #' Bayesian Model Average (BMA) estimate (obtained as the sample mean of the \eqn{S} draws) can be returned by setting \code{BMA = TRUE}.
 #'
 #' Notice that, whenever implemented with \code{collapse = FALSE}, \code{learn_DAG} returns the marginal posterior distribution of DAGs only.
-#' In this case, \code{get_causaleffect} preliminarily performs posterior inference of DAG parameters by drawing samples from the posterior of \code{(D,L)}.
+#' In this case, \code{get_causaleffect} preliminarly performs posterior inference of DAG parameters by drawing samples from the posterior of \code{(D,L)}.
+#'
+#' Print, summary and plot methods are available for this function. \code{print} returns the values of the prior hyperparameters used in the learnDAG function. \code{summary} returns, for each causal effect parameter, the marginal posterior mean and quantiles for different \eqn{\alpha} levels, and posterior probabilities of negative, null and positive causal effects. \code{plot} provides graphical summaries (boxplot and histogram of the distribution) for the posterior of each causal effect parameter.
 #'
 #' @author Federico Castelletti and Alessandro Mascaro
 #'
@@ -26,12 +28,9 @@
 #' @param targets numerical \eqn{(p,1)} vector with labels of target nodes
 #' @param response numerical label of response variable
 #' @param learnDAG_output object of class \code{bcdag}
-#' @param BMA boolean; if TRUE, the Bayesian model averaging (BMA) estimate of the total causal effect is returned;
-#' if FALSE, samples from the posterior distribution of causal effect coefficients are returned
 #' @param verbose if \code{TRUE}, progress bar of MCMC sampling is displayed
 #'
-#' @return Either a \eqn{(p,1)} vector containing BMA causal effect estimates, or a \eqn{(S,p)} matrix collecting \eqn{S} draws from the posterior
-#' of the \eqn{p} causal effect coefficients.
+#' @return An S3 object of class \code{bcdagCE} containing \eqn{S} draws from the joint posterior distribution of the \eqn{p} causal effect coefficients, organized into an \eqn{(S,p)} matrix, posterior means and credible intervals (under different \eqn{(1-\alpha)} levels) for each causal effect coefficient, and marginal posterior probabilities of positive, null and negative causal effects.
 #'
 #' @export
 #'
@@ -54,13 +53,17 @@
 #' head(out_mcmc$D)
 #' # Compute the BMA estimate of coefficients representing
 #' # the causal effect on node 1 of an intervention on {3,4}
-#' get_causaleffect(learnDAG_output = out_mcmc, targets = c(3,4), response = 1, BMA = TRUE)
+#' out_causal = get_causaleffect(learnDAG_output = out_mcmc, targets = c(3,4), response = 1)$post_mean
+#'
+#' # Methods
+#' print(out_causal)
+#' summary(out_causal)
+#' plot(out_causal)
 
-get_causaleffect <- function(learnDAG_output, targets, response, BMA = FALSE, verbose = TRUE) {
-
+get_causaleffect <- function(learnDAG_output, targets, response, verbose = TRUE) {
     ## Input check
 
-  learnDAGinput_check <- validate_bcdag(learnDAG_output)
+  learnDAGinput_check <- methods::is(learnDAG_output, "bcdag")
   targets_check <- is.numeric(targets) & is.vector(targets)
   if (targets_check) {
     targets_check <- targets_check & all(targets %% 1 == 0) &
@@ -82,7 +85,7 @@ get_causaleffect <- function(learnDAG_output, targets, response, BMA = FALSE, ve
   n <- nrow(input$data)
   q <- ncol(input$data)
   X <- scale(input$data, scale = FALSE)
-  tXX = t(X) %*% X
+  tXX = crossprod(X)
 
   if(targets_check == FALSE) stop("targets must be a vector containing the position of intervention targets in the dataset")
   if(response_check == FALSE) stop("response must be the numerical value indicating the position of the response variable in the dataset")
@@ -145,10 +148,20 @@ get_causaleffect <- function(learnDAG_output, targets, response, BMA = FALSE, ve
   for (i in 1:S) {
     causaleffects[i,] <- causaleffect(targets, response, L[,,i], D[,,i])
   }
-  if (BMA == FALSE) {
-    return(causaleffects)
-  } else {
-    BMA_causaleffect <- base::colMeans(causaleffects)
-    return(BMA_causaleffect)
-  }
+
+  postmean <- base::apply(causaleffects, 2, mean)
+  postquantiles <- base::apply(causaleffects, 2, stats::quantile, c(0.025, 0.25, 0.5, 0.75, 0.975))
+  Probs <- matrix(0, ncol = 3, nrow = length(targets))
+  Probs[,1] <- base::colMeans(causaleffects < 0)
+  Probs[,2] <- base::colMeans(causaleffects == 0)
+  Probs[,3] <- base::colMeans(causaleffects > 0)
+  rownames(Probs) <- paste0("h = ", targets)
+  colnames(Probs) <- c("<0", "=0", ">0")
+
+  out_ce <- list(causaleffects = causaleffects, post_mean = postmean,
+                 post_ci = postquantiles, Probs = Probs)
+
+  input <- c(input, targets = targets, response = response)
+
+  out <- new_bcdagCE(out_ce, input = input, type = type)
 }

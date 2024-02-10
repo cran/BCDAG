@@ -1,4 +1,4 @@
-## ---- include = FALSE---------------------------------------------------------
+## ----include = FALSE----------------------------------------------------------
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
@@ -81,9 +81,9 @@ compressed_out$L[1]
 compressed_out$D[1]
 
 ## -----------------------------------------------------------------------------
-bd_decode(compressed_out$Graphs[1])
-round(bd_decode(compressed_out$L[1]),2)
-round(bd_decode(compressed_out$D[1]),2)
+BCDAG:::bd_decode(compressed_out$Graphs[1])
+round(BCDAG:::bd_decode(compressed_out$L[1]),2)
+round(BCDAG:::bd_decode(compressed_out$D[1]),2)
 
 ## ----echo = FALSE, include=FALSE----------------------------------------------
 comprcoll_out <- learn_DAG(S = 5000, burn = 1000, data = X,
@@ -99,7 +99,7 @@ comprcoll_out <- learn_DAG(S = 5000, burn = 1000, data = X,
 names(comprcoll_out)
 class(comprcoll_out)
 attributes(comprcoll_out)$type
-bd_decode(comprcoll_out$Graphs[1])
+BCDAG:::bd_decode(comprcoll_out$Graphs[1])
 
 ## ----results='hide'-----------------------------------------------------------
 # No approximation
@@ -119,7 +119,7 @@ time_fast
 round(get_edgeprobs(out_nofast), 2)
 round(get_edgeprobs(out_fast), 2)
 
-## ---- include = FALSE---------------------------------------------------------
+## ----include = FALSE----------------------------------------------------------
 par(oldpar)
 options(oldoptions)
 

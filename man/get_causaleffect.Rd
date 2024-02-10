@@ -4,13 +4,7 @@
 \alias{get_causaleffect}
 \title{Estimate total causal effects from the MCMC output}
 \usage{
-get_causaleffect(
-  learnDAG_output,
-  targets,
-  response,
-  BMA = FALSE,
-  verbose = TRUE
-)
+get_causaleffect(learnDAG_output, targets, response, verbose = TRUE)
 }
 \arguments{
 \item{learnDAG_output}{object of class \code{bcdag}}
@@ -19,14 +13,10 @@ get_causaleffect(
 
 \item{response}{numerical label of response variable}
 
-\item{BMA}{boolean; if TRUE, the Bayesian model averaging (BMA) estimate of the total causal effect is returned;
-if FALSE, samples from the posterior distribution of causal effect coefficients are returned}
-
 \item{verbose}{if \code{TRUE}, progress bar of MCMC sampling is displayed}
 }
 \value{
-Either a \eqn{(p,1)} vector containing BMA causal effect estimates, or a \eqn{(S,p)} matrix collecting \eqn{S} draws from the posterior
-of the \eqn{p} causal effect coefficients.
+An S3 object of class \code{bcdagCE} containing \eqn{S} draws from the joint posterior distribution of the \eqn{p} causal effect coefficients, organized into an \eqn{(S,p)} matrix, posterior means and credible intervals (under different \eqn{(1-\alpha)} levels) for each causal effect coefficient, and marginal posterior probabilities of positive, null and negative causal effects.
 }
 \description{
 This function provides causal effect estimates from the output of \code{learn_DAG}
@@ -44,7 +34,9 @@ of the DAG parameters returned by \code{learn_DAG}. For each coefficient a sampl
 Bayesian Model Average (BMA) estimate (obtained as the sample mean of the \eqn{S} draws) can be returned by setting \code{BMA = TRUE}.
 
 Notice that, whenever implemented with \code{collapse = FALSE}, \code{learn_DAG} returns the marginal posterior distribution of DAGs only.
-In this case, \code{get_causaleffect} preliminarily performs posterior inference of DAG parameters by drawing samples from the posterior of \code{(D,L)}.
+In this case, \code{get_causaleffect} preliminarly performs posterior inference of DAG parameters by drawing samples from the posterior of \code{(D,L)}.
+
+Print, summary and plot methods are available for this function. \code{print} returns the values of the prior hyperparameters used in the learnDAG function. \code{summary} returns, for each causal effect parameter, the marginal posterior mean and quantiles for different \eqn{\alpha} levels, and posterior probabilities of negative, null and positive causal effects. \code{plot} provides graphical summaries (boxplot and histogram of the distribution) for the posterior of each causal effect parameter.
 }
 \examples{
 # Randomly generate a DAG and the DAG-parameters
@@ -66,7 +58,12 @@ head(out_mcmc$L)
 head(out_mcmc$D)
 # Compute the BMA estimate of coefficients representing
 # the causal effect on node 1 of an intervention on {3,4}
-get_causaleffect(learnDAG_output = out_mcmc, targets = c(3,4), response = 1, BMA = TRUE)
+out_causal = get_causaleffect(learnDAG_output = out_mcmc, targets = c(3,4), response = 1)$post_mean
+
+# Methods
+print(out_causal)
+summary(out_causal)
+plot(out_causal)
 }
 \references{
 J. Pearl (2000). \emph{Causality: Models, Reasoning, and Inference}. Cambridge University Press, Cambridge.

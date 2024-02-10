@@ -7,6 +7,8 @@
 #' @param type A string indicating whether the output produced by \code{learn_DAG()} should be of type "complete", "compressed", "collapsed" or "compressed and collapsed"
 #'
 #' @return An S3 object of class \code{bcdag}
+#' @noRd
+#' @keywords internal
 #'
 #' @author Federico Castelletti and Alessandro Mascaro
 #'
