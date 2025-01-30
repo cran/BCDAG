@@ -30,10 +30,10 @@ out <- learn_DAG(S = 5000, burn = 1000, data = X,
                  fast = FALSE, save.memory = FALSE, collapse = FALSE)
 
 ## ----eval = FALSE-------------------------------------------------------------
-#  ## Run MCMC
-#  out <- learn_DAG(S = 5000, burn = 1000, data = X,
-#                   a, U, w,
-#                   fast = FALSE, save.memory = FALSE, collapse = FALSE)
+# ## Run MCMC
+# out <- learn_DAG(S = 5000, burn = 1000, data = X,
+#                  a, U, w,
+#                  fast = FALSE, save.memory = FALSE, collapse = FALSE)
 
 ## ----fig.width = 7, fig.height= 6---------------------------------------------
 get_diagnostics(out, ask = FALSE)
@@ -106,9 +106,9 @@ coll_out <- learn_DAG(S = 5000, burn = 1000, data = X,
                  fast = FALSE, save.memory = FALSE, collapse = TRUE)
 
 ## ----eval=FALSE---------------------------------------------------------------
-#  coll_out <- learn_DAG(S = 5000, burn = 1000, data = X,
-#                        a, U, w,
-#                   fast = FALSE, save.memory = FALSE, collapse = TRUE)
+# coll_out <- learn_DAG(S = 5000, burn = 1000, data = X,
+#                       a, U, w,
+#                  fast = FALSE, save.memory = FALSE, collapse = TRUE)
 
 ## -----------------------------------------------------------------------------
 names(coll_out)
@@ -117,7 +117,7 @@ names(coll_out)
 effects_collout <- get_causaleffect(coll_out, targets = c(4,5), response = 1)
 
 ## ----eval = FALSE-------------------------------------------------------------
-#  effects_collout <- get_causaleffect(coll_out, targets = c(4,5), response = 1)
+# effects_collout <- get_causaleffect(coll_out, targets = c(4,5), response = 1)
 
 ## -----------------------------------------------------------------------------
 round(effects_collout$post_mean, 3)

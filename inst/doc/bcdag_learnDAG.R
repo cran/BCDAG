@@ -29,9 +29,9 @@ out <- learn_DAG(S = 5000, burn = 1000, data = X,
                  fast = FALSE, save.memory = FALSE, collapse = FALSE)
 
 ## ----eval = FALSE-------------------------------------------------------------
-#  out <- learn_DAG(S = 5000, burn = 1000, data = X,
-#                   a, U, w,
-#                   fast = FALSE, save.memory = FALSE, collapse = FALSE)
+# out <- learn_DAG(S = 5000, burn = 1000, data = X,
+#                  a, U, w,
+#                  fast = FALSE, save.memory = FALSE, collapse = FALSE)
 
 ## -----------------------------------------------------------------------------
 class(out)
@@ -50,9 +50,9 @@ collapsed_out <- learn_DAG(S = 5000, burn = 1000, data = X,
                  fast = FALSE, save.memory = FALSE, collapse = TRUE)
 
 ## ----eval = FALSE-------------------------------------------------------------
-#  collapsed_out <- learn_DAG(S = 5000, burn = 1000, data = X,
-#                   a, U, w,
-#                   fast = FALSE, save.memory = FALSE, collapse = TRUE)
+# collapsed_out <- learn_DAG(S = 5000, burn = 1000, data = X,
+#                  a, U, w,
+#                  fast = FALSE, save.memory = FALSE, collapse = TRUE)
 
 ## -----------------------------------------------------------------------------
 names(collapsed_out)
@@ -66,9 +66,9 @@ compressed_out <- learn_DAG(S = 5000, burn = 1000, data = X,
                  fast = FALSE, save.memory = TRUE, collapse = FALSE)
 
 ## ----eval = FALSE-------------------------------------------------------------
-#  compressed_out <- learn_DAG(S = 5000, burn = 1000, data = X,
-#                   a, U, w,
-#                   fast = FALSE, save.memory = TRUE, collapse = FALSE)
+# compressed_out <- learn_DAG(S = 5000, burn = 1000, data = X,
+#                  a, U, w,
+#                  fast = FALSE, save.memory = TRUE, collapse = FALSE)
 
 ## -----------------------------------------------------------------------------
 names(compressed_out)
@@ -91,9 +91,9 @@ comprcoll_out <- learn_DAG(S = 5000, burn = 1000, data = X,
                  fast = FALSE, save.memory = TRUE, collapse = TRUE)
 
 ## ----eval = FALSE-------------------------------------------------------------
-#  comprcoll_out <- learn_DAG(S = 5000, burn = 1000, data = X,
-#                   a, U, w,
-#                   fast = FALSE, save.memory = TRUE, collapse = TRUE)
+# comprcoll_out <- learn_DAG(S = 5000, burn = 1000, data = X,
+#                  a, U, w,
+#                  fast = FALSE, save.memory = TRUE, collapse = TRUE)
 
 ## -----------------------------------------------------------------------------
 names(comprcoll_out)

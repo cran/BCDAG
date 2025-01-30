@@ -44,7 +44,21 @@
 #' @param collapse boolean, if \code{TRUE} only structure learning of DAGs is performed
 #' @param verbose If \code{TRUE}, progress bars are displayed
 #'
-#' @return An S3 object of class \code{bcdag} containing \eqn{S} draws from the posterior of DAGs and (if \code{collapse = FALSE}) of DAG parameters \eqn{D} and \eqn{L}. If \code{save.memory = FALSE}, these are stored in three arrays of dimension \eqn{(q,q,S)}. Otherwise, they are stored as strings.
+#' @return An S3 object of class \code{bcdag}, with a \code{type} attribute describing the chosen output format:
+#' \itemize{
+#'   \item \code{"complete"} (\code{collapse = FALSE}, \code{save.memory = FALSE}):
+#'   \eqn{S} draws of DAGs and parameters \eqn{(D, L)}, stored in three
+#'   \eqn{(q,q,S)} arrays;
+#'
+#'   \item \code{"compressed"} (\code{collapse = FALSE}, \code{save.memory = TRUE}):
+#'   \eqn{S} draws of DAGs and parameters \eqn{(D, L)}, stored as character vectors;
+#'
+#'   \item \code{"collapsed"} (\code{collapse = TRUE}, \code{save.memory = FALSE}):
+#'   \eqn{S} draws of DAGs, stored in a \eqn{(q,q,S)} array;
+#'
+#'   \item \code{"compressed and collapsed"} (\code{collapse = TRUE}, \code{save.memory = TRUE}):
+#'   \eqn{S} draws of DAGs, stored as a character vector;
+#' }
 #' @export
 #'
 #' @examples # Randomly generate a DAG and the DAG-parameters
