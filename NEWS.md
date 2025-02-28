@@ -1,3 +1,6 @@
+# BCDAG 1.1.3
+* Corrected tests which were returning errors only on some flavors
+
 # BCDAG 1.1.2
 * Improved documentation of `learn_DAG()`
 

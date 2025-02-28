@@ -1,7 +1,7 @@
-dd24516a34e70859754b08952344a50f *DESCRIPTION
+c115252c000d9974d2affe0c342824cd *DESCRIPTION
 b2a879874037c0bfbb5ab5bd401e6f7b *LICENSE
 843156e90ba69b8fe8562cd2f19a7b32 *NAMESPACE
-a02dba56d77cfe2b21676b4966a03db4 *NEWS.md
+4cf75be9ead0d0b6c4a95f7fad4f1b02 *NEWS.md
 136028da6334f75c2dd9f155df36e328 *R/DW_nodelml.R
 6a2a67f153c8db0f5216aea090cc48e0 *R/acceptreject_DAG.R
 8d5bd5fb12c39310083fff528bf6c42a *R/as_graphNEL.R
@@ -45,7 +45,7 @@ dabe4c0d17b0af906b58f2eaf58379df *R/propose_DAG.R
 eaa80b7975608f57eb8d814d58e23a11 *inst/doc/bcdag_getfamily.html
 e2f2c5754176ebbbfdff71248c6edced *inst/doc/bcdag_learnDAG.R
 5e30560789fa9da0f631dcffd5f0d994 *inst/doc/bcdag_learnDAG.Rmd
-a10589c9870149f07f0895be67d9b78e *inst/doc/bcdag_learnDAG.html
+4b8d0485bab7465f3593b3a283f2d4d4 *inst/doc/bcdag_learnDAG.html
 646fdcd1f851a949abd4655731da3316 *man/as_graphNEL.Rd
 06a4f45082c08dd949d4717b8ffd40ea *man/causaleffect.Rd
 2fa22bdd2334706b451e6fd7a330aebd *man/confint.bcdagCE.Rd
@@ -71,8 +71,6 @@ b89f385a8ae54ea14300301d8b735f0f *tests/testthat/test-DW-Random-sampling.R
 0fbbbe2434ae611c56746761d2eebca0 *tests/testthat/test-learnDAG.R
 9047a4e03039e89af374b9b209af825c *tests/testthat/test-mll-equivalence.R
 df52344e7315c31931c43c3042c56814 *tests/testthat/test-warnings-causaleffect.R
-0b4933de3d41836118b7ec1f95d75e32 *tests/testthat/test-warnings-get_causaleffect.R
-46a24c0e74868a0ece36a6cbaeec5cec *tests/testthat/test-warnings-learn_DAG.R
 7d8e7d23a70755f9fe26adfbac5d0141 *vignettes/bcdag_generatedata.Rmd
 6eb2b55ec814ef01a9f62a9bbe8f5f09 *vignettes/bcdag_getfamily.Rmd
 5e30560789fa9da0f631dcffd5f0d994 *vignettes/bcdag_learnDAG.Rmd

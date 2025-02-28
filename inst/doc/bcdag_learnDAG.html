@@ -672,10 +672,10 @@ produces the following results in terms of computational time:</p>
 <span id="cb15-8"><a href="#cb15-8" tabindex="-1"></a>                      <span class="at">fast =</span> <span class="cn">TRUE</span>, <span class="at">save.memory =</span> <span class="cn">FALSE</span>, <span class="at">collapse =</span> <span class="cn">FALSE</span>))</span></code></pre></div>
 <div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a>time_nofast</span>
 <span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a><span class="co">#&gt;    user  system elapsed </span></span>
-<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a><span class="co">#&gt;   5.760   0.040   5.815</span></span>
+<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a><span class="co">#&gt;   5.973   0.081   6.110</span></span>
 <span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a>time_fast</span>
 <span id="cb16-5"><a href="#cb16-5" tabindex="-1"></a><span class="co">#&gt;    user  system elapsed </span></span>
-<span id="cb16-6"><a href="#cb16-6" tabindex="-1"></a><span class="co">#&gt;   2.310   0.008   2.322</span></span></code></pre></div>
+<span id="cb16-6"><a href="#cb16-6" tabindex="-1"></a><span class="co">#&gt;   2.326   0.015   2.346</span></span></code></pre></div>
 <p>Finally, the corresponding estimated posterior probabilities of edge
 inclusion are the following:</p>
 <div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">get_edgeprobs</span>(out_nofast), <span class="dv">2</span>)</span>
