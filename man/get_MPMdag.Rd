@@ -43,6 +43,8 @@ get_MPMdag(out_mcmc)
 
 }
 \references{
+F. Castelletti and A. Mascaro (2026). BCDAG: An R package for Bayesian structural and Causal learning of Gaussian DAGs. \emph{Journal of Statistical Software}, \url{doi:10.18637/jss.v116.i05}.
+
 F. Castelletti and A. Mascaro (2021). Structural learning and estimation of joint causal effects among network-dependent variables. \emph{Statistical Methods and Applications}, Advance publication
 
 M.M. Barbieri and J.O. Berger (2004). Optimal predictive model selection. \emph{The Annals of Statistics} 32 870-897

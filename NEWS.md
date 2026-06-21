@@ -1,3 +1,5 @@
+# BCDAG 1.1.4
+
 # BCDAG 1.1.3
 * Corrected tests which were returning errors only on some flavors
 

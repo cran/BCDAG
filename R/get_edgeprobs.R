@@ -11,7 +11,7 @@
 #'
 #' @author Federico Castelletti and Alessandro Mascaro
 #'
-#'
+#' @references F. Castelletti and A. Mascaro (2026). BCDAG: An R package for Bayesian structural and Causal learning of Gaussian DAGs. \emph{Journal of Statistical Software}, <doi:10.18637/jss.v116.i05>.
 #' @references F. Castelletti and A. Mascaro (2021). Structural learning and estimation of joint causal effects among network-dependent variables. \emph{Statistical Methods and Applications}, Advance publication.
 #'
 #' @param learnDAG_output object of class \code{bcdag}

@@ -56,6 +56,8 @@ out_mcmc = learn_DAG(S = 5000, burn = 1000, a = q, U = diag(1,q)/n, data = X, w 
 get_diagnostics(out_mcmc)
 }
 \references{
+F. Castelletti and A. Mascaro (2026). BCDAG: An R package for Bayesian structural and Causal learning of Gaussian DAGs. \emph{Journal of Statistical Software}, \url{doi:10.18637/jss.v116.i05}.
+
 F. Castelletti and A. Mascaro (2021). Structural learning and estimation of joint causal effects among network-dependent variables. \emph{Statistical Methods and Applications}, Advance publication.
 
 F. Castelletti (2020). Bayesian model selection of Gaussian Directed Acyclic Graph structures. \emph{International Statistical Review} 88 752-775.

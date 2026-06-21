@@ -1,0 +1,17 @@
+bibentry(bibtype = "Article",
+  title        = "{BCDAG}: An {R} Package for {B}ayesian Structure and Causal Learning of {G}aussian DAGs",
+  author       = c(person(given = "Federico",
+                          family = "Castelletti",
+                          email = "federico.castelletti@unicatt.it"),
+                   person(given = "Alessandro",
+                          family = "Mascaro",
+                          email = "alessandro.mascaro@upf.edu")),
+  journal      = "Journal of Statistical Software",
+  year         = "2026",
+  volume       = "116",
+  number       = "5",
+  pages        = "1--34",
+  doi          = "10.18637/jss.v116.i05",
+  header       = "To cite BCDAG in publications use:"
+)
+
